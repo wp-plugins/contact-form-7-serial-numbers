@@ -1,0 +1,60 @@
+div[id^=wpcf7sn_setting_] {
+    vertical-align: baseline;
+}
+
+div[id^=wpcf7sn_setting_] .clearfix:after {
+    content: ".";
+    display: block;
+    height: 0;
+    font-size: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+div[id^=wpcf7sn_setting_] .clearfix {
+    display: inline-block;
+}
+
+div[id^=wpcf7sn_setting_] .wpcf7sn_setting_title {
+    float: left;
+    width: 100%;
+}
+
+div[id^=wpcf7sn_setting_] .wpcf7sn_setting_col_left {
+    float: left;
+    width: 30%;
+    margin: 2px;
+    padding: 5px;
+}
+
+div[id^=wpcf7sn_setting_] .wpcf7sn_setting_col_center {
+    float: left;
+    width: 30%;
+    margin: 2px;
+    padding: 5px;
+}
+
+div[id^=wpcf7sn_setting_] .wpcf7sn_setting_col_right {
+    float: left;
+    margin: 2px;
+    padding: 5px;
+}
+
+div[id^=wpcf7sn_setting_] .wpcf7sn_setting_submit {
+    float: right;
+}
+
+.setting_body {
+    text-indent: -1.5em;
+    padding-left: 1.5em;
+}
+
+.setting_body label {
+    vertical-align: baseline;
+}
+
+.setting_body .indent {
+    display: block;
+    padding: 4px 1.5em;
+}
+
