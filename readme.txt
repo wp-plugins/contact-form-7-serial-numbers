@@ -3,7 +3,7 @@ Contributors: Kiminori KATO
 Tags: contact form
 Requires at least: 4.0
 Tested up to: 4.0
-Stable tag: 0.4
+Stable tag: 0.5.1
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -28,6 +28,13 @@ You will find 'Contact Form 7 Serial Numbers' menu in your WordPress admin panel
 
 == Changelog ==
 
+= 0.5.1 - 2014/11/06 =
+* Update: Updated this documents which had forgotten to update.
+
+= 0.5 - 2014/11/06 =
+* Changed: Changed Text Doamin to "contact-form-7-serial-numbers"
+* Changed: Changed behavior during uninstall plugins to uging "uninstall.php"
+
 = 0.4 - 2014/10/30 =
 * Internationalized. ( English, Japanese )
 
@@ -44,7 +51,7 @@ You will find 'Contact Form 7 Serial Numbers' menu in your WordPress admin panel
 
 == Upgrade Notice ==
 
-= 0.4 =
+= 0.5.1 =
 
 Nothing.
 
