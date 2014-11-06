@@ -5,7 +5,7 @@ Version: 0.4
 Description: お問い合わせフォームプラグイン Contact Form 7 にて問い合わせ番号をふる
 Author: Kiminori KATO
 Author URI: http://www.29lab.jp/
-Text Domain: CF7SerialNumbers
+Text Domain: contact-form-7-serial-numbers
 Domain Path: /languages
 */
 
@@ -17,7 +17,7 @@ class ContactForm7_Serial_Numbers {
 
     private $options;
     const OPTION_SAVE_FILE = 'wpcf7sn_options.txt';
-    const DOMAIN = 'CF7SerialNumbers';
+    const DOMAIN = 'contact-form-7-serial-numbers';
 
     function __construct() {
         $this->options = $this->get_plugin_options();
