@@ -59,7 +59,8 @@ class NKLAB_WPCF7SN_Contact_List_Table extends WP_List_Table {
             . '      <dt><span class="title">' . __( 'Display type', ContactForm7_Serial_Numbers::DOMAIN ) . '</span></dt>'
             . '      <dd>'
             . '        <p class="setting_body">'
-            . '          <input type="radio" name="nklab_wpcf7sn_type_' . $html_encoded_id . '" value="1" ' . ( $type == 1  ? 'checked' : '' ) . ' /><label>' . __( 'Serial Number', ContactForm7_Serial_Numbers::DOMAIN ) . '</label> <span style="padding-left: 10px;"> ' . sprintf( __( '( Now Count : %1$d )', ContactForm7_Serial_Numbers::DOMAIN ), $count ) . '</span><br />'
+            . '          <input type="radio" name="nklab_wpcf7sn_type_' . $html_encoded_id . '" value="1" ' . ( $type == 1  ? 'checked' : '' ) . ' /><label>' . __( 'Serial Number', ContactForm7_Serial_Numbers::DOMAIN ) . '</label><br />'
+            . '          <span class="indent"><label>' . __( 'Now Count value', ContactForm7_Serial_Numbers::DOMAIN ) . '</label> : <input type="text" name="nklab_wpcf7sn_count_' . $html_encoded_id . '" id="nklab_wpcf7sn_count_' . $html_encoded_id . '" value="' . $count . '" size="5" maxlength="4" /> <input type="button" id="CountModify' . $html_encoded_id . '" data-id="' . $html_encoded_id . '" class="button-primary" value="' . __( 'Set', ContactForm7_Serial_Numbers::DOMAIN ) . '" /></span>'
             . '          <span class="indent"><label>' . __( 'Number of digits', ContactForm7_Serial_Numbers::DOMAIN ) . '</label> : <input type="text" name="nklab_wpcf7sn_digits_' . $html_encoded_id . '" value="' . $ditits . '" size="2" maxlength="2" /></span>'
             . '        </p>'
             . '        <p class="setting_body">'
@@ -91,6 +92,12 @@ class NKLAB_WPCF7SN_Contact_List_Table extends WP_List_Table {
             . '      <p class="wpcf7sn_submit"><input type="submit" class="button-primary" value="' . __( 'Update', ContactForm7_Serial_Numbers::DOMAIN ) . '" /></p>'
             . '    </div>'
             . '  </div>'
+            . '</form>'
+            . '<form method="post" id="frmCountModify' . $html_encoded_id . '" name="frmCountModify' . $html_encoded_id . '" action="options.php">'
+            . wp_nonce_field( 'update-options' )
+            . '  <input type="hidden" name="action" value="update" />'
+            . '  <input type="hidden" name="page_options" value="nklab_wpcf7sn_count_' . $html_encoded_id . '" />'
+            . '  <input type="hidden" name="nklab_wpcf7sn_count_' . $html_encoded_id . '" id="nklab_wpcf7sn_count_' . $html_encoded_id . '" value="" />'
             . '</form>'
             . '</div>';
 

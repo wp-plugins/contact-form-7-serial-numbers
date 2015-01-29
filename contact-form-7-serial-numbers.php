@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: Contact Form 7 Serial Numbers
-Version: 0.5.1
-Description: お問い合わせフォームプラグイン Contact Form 7 にて問い合わせ番号をふる
+Version: 0.6
+Description: The just another serial numbering plugin for cantact for contact form 7.
 Author: Kiminori KATO
 Author URI: http://www.29lab.jp/
 Text Domain: contact-form-7-serial-numbers
@@ -36,6 +36,9 @@ class ContactForm7_Serial_Numbers {
 
         // フィルターフックの設定
         add_filter( 'wpcf7_special_mail_tags', array( &$this, 'special_mail_tags' ), 10, 2 );
+
+        // ショートコードの設定
+        add_shortcode( 'wpcf7sn_view_count', array( &$this, 'view_serial_number' ) );
 
         // 言語ファイルの読み込み
         load_plugin_textdomain( self::DOMAIN, false, basename( dirname( __FILE__ ) ) . '/languages' );
@@ -106,6 +109,12 @@ class ContactForm7_Serial_Numbers {
     function wpcf7sn_admin_opt_page() {
         $list_table = new NKLAB_WPCF7SN_Contact_List_Table();
         $list_table->prepare_items();
+
+        if ( is_admin() ) {
+            // jQuery 利用
+            wp_enqueue_script( 'jquery' );
+            wp_enqueue_script( self::DOMAIN, plugin_dir_url( __FILE__ ) . 'js/contact-form-7-serial-numbers.js' );
+        }
 ?>
 <div class="wrap">
     <h2><?php _e( 'Contact Form 7 Serial Numbers', self::DOMAIN ); ?></h2>
@@ -159,9 +168,62 @@ class ContactForm7_Serial_Numbers {
                     $output = '';
             }
             $output = $prefix . $output;
+
+            // 通し番号設定値のSession、またはCookieに一時的に記録
+            if ( isset( $_SESSION ) ) {
+                // セッションが有効
+                $_SESSION[ 'wpcf7sn_output_' . $id ] = $output;
+            } else {
+                // セッションが無効なため、有効期限 1 分の Cookie を利用
+                setcookie( 'wpcf7sn_output_' . $id, $output, time() + 60 );
+            }
         }
         return $output;
     }
+
+    // ShortCode
+    function view_serial_number( $atts ) {
+        // 引数の取得
+        extract(shortcode_atts(array(
+            'id' => 0,
+        ), $atts));
+
+        if ( isset( $_SESSION[ 'wpcf7sn_output_' . $id ] ) ) {
+            // セッションが有効
+            $output = $_SESSION[ 'wpcf7sn_output_' . $id ];
+        } else {
+            // セッションが無効なため、Cookie で
+            if ( isset( $_COOKIE[ 'wpcf7sn_output_' . $id ] ) ) {
+                $output = $_COOKIE[ 'wpcf7sn_output_' . $id ];
+            } else {
+                // セッションもCookieもダメ
+                $digits = ( get_option( 'nklab_wpcf7sn_digits_' . $id ) ) ? intval( get_option( 'nklab_wpcf7sn_digits_' . $id ) ) : 0;
+                $type   = ( get_option( 'nklab_wpcf7sn_type_' . $id ) ) ? intval( get_option( 'nklab_wpcf7sn_type_' . $id ) ) : 1;
+                $prefix = ( get_option( 'nklab_wpcf7sn_prefix_' . $id ) ) ? get_option( 'nklab_wpcf7sn_prefix_' . $id ) : '';
+                $count  = ( get_option( 'nklab_wpcf7sn_count_' . $id ) ) ? intval( get_option( 'nklab_wpcf7sn_count_' . $id ) ) : 0;
+
+                switch( $type ) {
+                    case 1:
+                        // 番号
+                        $output = $count;
+                        if ( $digits ) {
+                            $output = sprintf( "%0" . $digits . "d", $output );
+                        }
+                        break;
+                    case 2:
+                        // タイムスタンプ（メール生成時のタイムスタンプとは異なる）
+                        $output = microtime( true ) * 10000;
+                        break;
+                    default:
+                        $output = '';
+                }
+                $output = $prefix . $output;
+            }
+        }
+
+        return $output;
+    }
+
 }
 
 $NKLAB_WPCF7_SerialNumbers = new ContactForm7_Serial_Numbers();
