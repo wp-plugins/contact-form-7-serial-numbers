@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Contact Form 7 Serial Numbers
-Version: 0.6
+Version: 0.7.0
 Description: The just another serial numbering plugin for cantact for contact form 7.
 Author: Kiminori KATO
 Author URI: http://www.29lab.jp/
@@ -16,6 +16,7 @@ require_once NKLAB_WPCF7SN_PLUGIN_DIR . '/includes/class-contact_list_table.php'
 class ContactForm7_Serial_Numbers {
 
     private $options;
+    private $is_active_cf7ac;
     const OPTION_SAVE_FILE = 'wpcf7sn_options.txt';
     const DOMAIN = 'contact-form-7-serial-numbers';
 
@@ -42,6 +43,12 @@ class ContactForm7_Serial_Numbers {
 
         // 言語ファイルの読み込み
         load_plugin_textdomain( self::DOMAIN, false, basename( dirname( __FILE__ ) ) . '/languages' );
+
+        // Contact Form 7 add confirm が有効化されているか
+        // 有効化している場合は 1, していない場合は 0
+        $this->is_active_cf7ac =
+            ( $this->is_active_plugin('contact-form-7-add-confirm/contact-form-7-confirm.php') ) ?
+            intval( $this->is_active_plugin('contact-form-7-add-confirm/contact-form-7-confirm.php') ) : 0;
     }
 
     // plugin activation
@@ -128,13 +135,38 @@ class ContactForm7_Serial_Numbers {
 
     // increment count
     function increment_count( $contactform ) {
+        // allow count up flag
+        $allow_count_up = false;
+
         // get form id
         $id = intval( $contactform->id() );
 
         // get count
         $count = ( get_option( 'nklab_wpcf7sn_count_' . $id ) ) ? intval( get_option( 'nklab_wpcf7sn_count_' . $id ) ) : 0;
 
-        update_option( 'nklab_wpcf7sn_count_' . $id, intval( $count + 1 ) );
+        // check count up
+        if ( $this->is_active_cf7ac == 1 ) {
+            if ( isset( $_POST['_wpcf7c'] ) && ( "step1" != $_POST['_wpcf7c'] ) ) {
+                // Contact Form 7 add confirm を有効化しているが、 _wpcf7c に step1 が入っていない
+                $allow_count_up = true;
+            }
+        } else {
+            // Contact Form 7 add confirm を有効化していない
+            $allow_count_up = true;
+        }
+
+        if ( $allow_count_up ) {
+            update_option( 'nklab_wpcf7sn_count_' . $id, intval( $count + 1 ) );
+        }
+    }
+
+    // is active plugin
+    function is_active_plugin( $plugin ) {
+        if ( function_exists('is_plugin_active') ) {
+            return is_plugin_active( $plugin );
+        } else {
+            return in_array( $plugin, get_option('active_plugins') );
+        }
     }
 
     // special mail tags
